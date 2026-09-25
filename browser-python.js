@@ -1,5 +1,5 @@
 'use strict';
-$('settings').textContent='GitHub 保存授权';
+
 let pythonWorker=null,pythonDeadline;
 const stopPython=document.createElement('button');stopPython.id='stopPython';stopPython.textContent='停止';stopPython.disabled=true;$('run').before(stopPython);
 const inputDetails=document.createElement('details');inputDetails.className='python-input';
