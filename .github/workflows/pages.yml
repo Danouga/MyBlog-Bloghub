@@ -22,7 +22,7 @@ jobs:
       - name: Prepare static files
         run: |
           mkdir _site
-          cp index.html style.css app.js library.css library.js _site/
+          cp index.html style.css app.js library.css library.js browser-python.js python-worker.js python.css _site/
           python3 build_notes.py
       - uses: actions/upload-pages-artifact@v3
         with:

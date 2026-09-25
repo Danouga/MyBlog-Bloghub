@@ -17,7 +17,7 @@ let initiallyCollapsed=false;try{initiallyCollapsed=localStorage.getItem('bloghu
 const toolsRow=document.createElement('div');toolsRow.className='folder-tools';
 const newFolder=document.createElement('button');newFolder.textContent='＋ 文件夹';newFolder.id='newFolder';
 const locationLabel=document.createElement('span');locationLabel.id='folderLocation';toolsRow.append(newFolder,locationLabel);body.prepend(toolsRow);
-const folderHint=document.createElement('p');folderHint.className='hint';folderHint.textContent='空文件夹保存在本机；文件保存到 GitHub 时同步对应目录。';body.append(folderHint);
+const folderHint=document.createElement('p');folderHint.className='hint';folderHint.textContent='文件夹保存在本机；发布时请手动上传到仓库 notes 下的对应目录。';body.append(folderHint);
 const dialog=document.createElement('dialog');dialog.id='newItem';
 const form=document.createElement('form');const dialogTitle=document.createElement('h2');const input=document.createElement('input');input.required=true;input.setAttribute('aria-label','名称');const error=document.createElement('p');error.setAttribute('role','status');const actions=document.createElement('div');actions.className='folder-tools';const cancel=document.createElement('button');cancel.type='button';cancel.textContent='取消';cancel.onclick=()=>dialog.close();const submit=document.createElement('button');submit.type='submit';submit.className='primary';submit.textContent='创建';actions.append(cancel,submit);form.append(dialogTitle,input,error,actions);dialog.append(form);document.body.append(dialog);
 let creatingFolder=false;
