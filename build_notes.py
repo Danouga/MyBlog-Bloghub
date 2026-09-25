@@ -5,10 +5,11 @@ from pathlib import Path
 
 def collect():
     result = []
-    for path in sorted((Path(__file__).resolve().parent / 'notes').glob('*')):
+    root = Path(__file__).resolve().parent / 'notes'
+    for path in sorted(root.rglob('*')):
         if path.is_file():
             raw = path.read_bytes()
-            result.append({'name': path.name, 'content': raw.decode('utf-8'), 'sha': hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest()})
+            result.append({'name': path.relative_to(root).as_posix(), 'content': raw.decode('utf-8'), 'sha': hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest()})
     return result
 
 

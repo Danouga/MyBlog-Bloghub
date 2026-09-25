@@ -10,7 +10,7 @@ import build_notes
 
 class PublishTests(unittest.TestCase):
     def test_invalid_names(self):
-        for name in ['../secret.md', 'a/b.md', 'a\\b.py', 'test.exe']:
+        for name in ['../secret.md', 'a/../b.md', '/a.md', 'a//b.md', 'a\\b.py', 'test.exe']:
             with self.assertRaises(ValueError):
                 publish_notes.publish({'name': name, 'content': ''})
 
@@ -20,7 +20,8 @@ class PublishTests(unittest.TestCase):
         git.return_value.returncode = 0
         git.return_value.stdout = 'password=test-only\n'
         request.return_value = io.BytesIO(json.dumps({'content': {'sha': 'new', 'html_url': 'url'}}).encode())
-        result = publish_notes.publish({'name': 'note.md', 'content': '你好', 'sha': 'old'})
+        result = publish_notes.publish({'name': '学习/Python/note.md', 'content': '你好', 'sha': 'old'})
+        self.assertIn('/Python/note.md', request.call_args.args[0].full_url)
         payload = json.loads(request.call_args.args[0].data)
         self.assertEqual(payload['sha'], 'old')
         self.assertEqual(base64.b64decode(payload['content']).decode(), '你好')

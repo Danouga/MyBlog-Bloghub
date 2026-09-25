@@ -19,6 +19,7 @@ ENVIRONMENTS = list(dict.fromkeys(filter(None, [sys.executable, shutil.which('py
 LOCK = threading.Lock()
 ORIGINS = {'http://127.0.0.1:8765', 'http://localhost:8765', 'https://danouga.github.io'}
 STATIC = {'/': ('index.html', 'text/html'), '/index.html': ('index.html', 'text/html'), '/style.css': ('style.css', 'text/css'), '/app.js': ('app.js', 'text/javascript')}
+STATIC.update({'/library.js': ('library.js', 'text/javascript'), '/library.css': ('library.css', 'text/css')})
 
 
 def run_code(python, code):
