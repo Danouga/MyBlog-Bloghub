@@ -14,6 +14,7 @@ self.onmessage=async ({data})=>{
       importScripts(indexURL+'pyodide.js');
       runtime=await loadPyodide({indexURL,stdout:append,stderr:append});
     }
+    self.postMessage({type:'ready'});
     runtime.setStdout({batched:append});runtime.setStderr({batched:append});
     const lines=data.stdin===''?[]:data.stdin.split(/\r?\n/);let line=0;
     runtime.setStdin({stdin:()=>line<lines.length?lines[line++]:null});
@@ -24,6 +25,6 @@ self.onmessage=async ({data})=>{
     const result=await runtime.runPythonAsync(data.code,{globals});
     if(result&&typeof result.destroy==='function')result.destroy();
     flush();self.postMessage({type:'done',truncated:sent>=200000});
-  }catch(error){flush();self.postMessage({type:'error',text:String(error.message||error)});}
+  }catch(error){flush();self.postMessage({type:'error',text:String(error.message||error),fatal:!runtime});}
   finally{clearInterval(ticker);if(globals)globals.destroy();}
 };
