@@ -6,7 +6,6 @@ try { folders = JSON.parse(localStorage.getItem('bloghub.folders.v1') || '[]'); 
 function validFolder(path) { return path.length<=200 && path.split('/').every(p=>p.trim()===p && p.length>0 && p!=='.' && p!=='..' && !/[\\:*?"<>|\x00-\x1f]/.test(p)); }
 function folderOf(name) { const i=name.lastIndexOf('/'); return i<0?'':name.slice(0,i); }
 function folderPaths() { const paths=new Set(folders); for(const f of files) { const parts=folderOf(f.name).split('/').filter(Boolean); for(let i=1;i<=parts.length;i++)paths.add(parts.slice(0,i).join('/')); } return [...paths].sort((a,b)=>a.localeCompare(b,'zh-CN')); }
-function saveFolders() { try {localStorage.setItem('bloghub.folders.v1',JSON.stringify(folders));}catch{notice('文件夹保存失败：浏览器存储不可用');} }
 const title=library.querySelector('h2');
 const heading=document.createElement('div'); heading.className='library-heading'; title.before(heading); heading.append(title);
 const toggle=document.createElement('button');toggle.id='toggleLibrary';toggle.setAttribute('aria-controls','libraryBody');heading.append(toggle);
@@ -15,15 +14,12 @@ function collapse(value) { layout.classList.toggle('library-collapsed',value);bo
 toggle.onclick=()=>collapse(!body.hidden);
 let initiallyCollapsed=false;try{initiallyCollapsed=localStorage.getItem('bloghub.sidebar.collapsed')==='true';}catch{}collapse(initiallyCollapsed);
 const toolsRow=document.createElement('div');toolsRow.className='folder-tools';
-const newFolder=document.createElement('button');newFolder.textContent='＋ 文件夹';newFolder.id='newFolder';
-const locationLabel=document.createElement('span');locationLabel.id='folderLocation';toolsRow.append(newFolder,locationLabel);body.prepend(toolsRow);
-const folderHint=document.createElement('p');folderHint.className='hint';folderHint.textContent='文件夹保存在本机；发布时请手动上传到仓库 notes 下的对应目录。';body.append(folderHint);
+const locationLabel=document.createElement('span');locationLabel.id='folderLocation';toolsRow.append(locationLabel);body.prepend(toolsRow);
 const dialog=document.createElement('dialog');dialog.id='newItem';
 const form=document.createElement('form');const dialogTitle=document.createElement('h2');const input=document.createElement('input');input.required=true;input.setAttribute('aria-label','名称');const error=document.createElement('p');error.setAttribute('role','status');const actions=document.createElement('div');actions.className='folder-tools';const cancel=document.createElement('button');cancel.type='button';cancel.textContent='取消';cancel.onclick=()=>dialog.close();const submit=document.createElement('button');submit.type='submit';submit.className='primary';submit.textContent='创建';actions.append(cancel,submit);form.append(dialogTitle,input,error,actions);dialog.append(form);document.body.append(dialog);
-let creatingFolder=false;
-function openCreate(folder) {creatingFolder=folder;dialogTitle.textContent=(folder?'新建文件夹':'新建文件')+' · '+(activeFolder||'根目录');input.value=folder?'':'未命名.md';error.textContent='';dialog.showModal();input.focus();input.select();}
-newFolder.onclick=()=>openCreate(true);$('create').onclick=()=>openCreate(false);
-form.onsubmit=e=>{e.preventDefault();const name=input.value.trim();const path=(activeFolder?activeFolder+'/':'')+name;if(!name||!validFolder(path)){error.textContent='名称不可包含非法符号、空路径或 ..';return;}if(creatingFolder){if(folderPaths().includes(path)||files.some(f=>f.name===path)){error.textContent='同名文件夹或文件已存在';return;}const parts=path.split('/');for(let i=1;i<=parts.length;i++){const p=parts.slice(0,i).join('/');if(!folders.includes(p))folders.push(p);closedFolders.delete(p);}saveFolders();activeFolder=path;list();}else{if(files.some(f=>f.name===path)||folderPaths().includes(path)){error.textContent='同名文件或文件夹已存在';return;}files.unshift({id:crypto.randomUUID(),name:path,content:'',updated:Date.now()});persist();select(files[0].id);}dialog.close();};
+function openCreate() {dialogTitle.textContent='新建文件 · '+(activeFolder||'根目录');input.value='未命名.md';error.textContent='';dialog.showModal();input.focus();input.select();}
+$('create').onclick=openCreate;
+form.onsubmit=e=>{e.preventDefault();const name=input.value.trim();const path=(activeFolder?activeFolder+'/':'')+name;if(!name||name.includes('/')||!validFolder(path)){error.textContent='请输入不含路径的有效文件名';return;}if(files.some(f=>f.name===path)||folderPaths().includes(path)){error.textContent='同名文件或文件夹已存在';return;}files.unshift({id:crypto.randomUUID(),name:path,content:'',updated:Date.now()});persist();select(files[0].id);dialog.close();};
 list=function(){
   const query=$('search').value.toLowerCase();const paths=folderPaths();const visible=files.filter(f=>(filter==='all'||(filter==='md'?ext(f.name)==='md':ext(f.name)!=='md'))&&(f.name+' '+f.content).toLowerCase().includes(query));
   $('files').replaceChildren();$('count').textContent=files.length;locationLabel.textContent=activeFolder||'根目录';locationLabel.title=locationLabel.textContent;
