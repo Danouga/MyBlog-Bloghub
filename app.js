@@ -28,3 +28,39 @@ $('connect').onclick=async()=>{try{const data=await api('/environments',{});envi
 $('addEnvironment').onclick=async()=>{try{const data=await api('/environment',{path:$('pythonPath').value});environments(data.environments);$('environment').value=data.selected;$('configStatus').textContent='环境已添加';}catch(e){$('configStatus').textContent=e.message;}};
 $('run').onclick=async()=>{if(!confirm('将在本机运行当前 Python 代码，它具有你的本机权限。是否继续？'))return;busy=true;runState();$('output').textContent='正在运行（最长 30 秒）…';try{const data=await api('/run',{python:$('environment').value,code:$('editor').value});$('output').textContent=data.output+'\n\n[退出码 '+data.returncode+(data.timeout?' · 执行超时':'')+']';}catch(e){$('output').textContent='运行失败：'+e.message;}finally{busy=false;runState();}};
 select(files[0]?.id);
+
+// Public repository notes with local draft protection. Credentials stay on the local service.
+$('save').textContent='保存到 GitHub';
+$('delete').textContent='移除本地副本';
+document.querySelector('aside .hint').textContent='编辑自动存为本地草稿；保存到 GitHub 后所有人可见。移除本地副本不会删除仓库笔记。';
+const refresh=document.createElement('button');refresh.textContent='刷新公开笔记';refresh.onclick=loadPublic;document.querySelector('aside').append(refresh);
+let publishing=false;
+async function loadPublic(){
+  try{
+    const response=await fetch('https://danouga.github.io/MyBlog-Bloghub/notes.json?t='+Date.now(),{cache:'no-store'});
+    if(!response.ok)throw Error('HTTP '+response.status);
+    const notes=await response.json();
+    if(!Array.isArray(notes))throw Error('目录格式错误');
+    for(const note of notes){
+      if(typeof note.name!=='string'||typeof note.content!=='string'||typeof note.sha!=='string')continue;
+      const existing=files.find(f=>f.remoteName===note.name);
+      if(existing){
+        if(existing.content===existing.publishedContent&&existing.name===existing.remoteName){existing.content=note.content;existing.publishedContent=note.content;existing.sha=note.sha;}
+      }else files.push({id:crypto.randomUUID(),name:note.name,content:note.content,remoteName:note.name,sha:note.sha,publishedContent:note.content,updated:Date.now()});
+    }
+    persist();select(current||files[0]?.id);notice('公开笔记已加载，本地草稿已保留');
+  }catch(e){notice('公开笔记加载失败：'+e.message+'；本地草稿仍可使用');}
+}
+async function publish(){
+  if(publishing)return;
+  update();const f=files.find(f=>f.id===current);if(!f)return;
+  if(!connected){notice('请先连接本地服务，再保存到 GitHub');$('config').showModal();return;}
+  const snapshot={name:f.name,content:f.content,sha:f.remoteName===f.name?f.sha:undefined};
+  publishing=true;$('save').disabled=true;$('save').textContent='正在提交…';
+  try{const result=await api('/publish',snapshot);f.remoteName=snapshot.name;f.sha=result.sha;f.publishedContent=snapshot.content;persist();notice('已保存到公开仓库；网站部署完成后可见');}
+  catch(e){notice(e.message+'（本地草稿保留）');}
+  finally{publishing=false;$('save').disabled=!current;$('save').textContent='保存到 GitHub';}
+}
+$('save').onclick=publish;
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();publish();}});
+loadPublic();

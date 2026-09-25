@@ -23,6 +23,7 @@ jobs:
         run: |
           mkdir _site
           cp index.html style.css app.js _site/
+          python3 build_notes.py
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

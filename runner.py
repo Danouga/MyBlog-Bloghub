@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parent
 TOKEN = secrets.token_urlsafe(32)
 ENVIRONMENTS = list(dict.fromkeys(filter(None, [sys.executable, shutil.which('python')])) )
 LOCK = threading.Lock()
-ORIGINS = {'http://127.0.0.1:8765', 'http://localhost:8765'}
+ORIGINS = {'http://127.0.0.1:8765', 'http://localhost:8765', 'https://danouga.github.io'}
 STATIC = {'/': ('index.html', 'text/html'), '/index.html': ('index.html', 'text/html'), '/style.css': ('style.css', 'text/css'), '/app.js': ('app.js', 'text/javascript')}
 
 
@@ -82,6 +82,9 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.headers.get('Host') not in {'127.0.0.1:8765', 'localhost:8765'}:
             return self.reply(403, {'error': 'Host 不允许'})
+        if self.path.split('?')[0] == '/notes.json':
+            from build_notes import collect
+            return self.reply(200, collect())
         asset = STATIC.get(self.path.split('?')[0])
         if not asset:
             return self.reply(404, {'error': 'Not found'})
@@ -90,7 +93,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Content-Type', asset[1] + '; charset=utf-8')
         self.send_header('Content-Length', str(len(body)))
         self.send_header('X-Content-Type-Options', 'nosniff')
-        self.send_header('Content-Security-Policy', "default-src 'self'; connect-src http://127.0.0.1:8765; frame-ancestors 'none'")
+        self.send_header('Content-Security-Policy', "default-src 'self'; connect-src 'self' http://127.0.0.1:8765 https://danouga.github.io; frame-ancestors 'none'")
         self.end_headers()
         self.wfile.write(body)
 
@@ -106,6 +109,9 @@ class Handler(BaseHTTPRequestHandler):
             data = json.loads(self.rfile.read(length))
             if not isinstance(data, dict):
                 raise ValueError('请求必须是对象')
+            if self.path == '/publish':
+                from publish_notes import publish
+                return self.reply(200, publish(data))
             if self.path == '/environments':
                 return self.reply(200, {'environments': ENVIRONMENTS})
             if self.path == '/environment':
