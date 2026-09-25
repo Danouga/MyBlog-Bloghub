@@ -20,6 +20,7 @@ LOCK = threading.Lock()
 ORIGINS = {'http://127.0.0.1:8765', 'http://localhost:8765', 'https://danouga.github.io'}
 STATIC = {'/': ('index.html', 'text/html'), '/index.html': ('index.html', 'text/html'), '/style.css': ('style.css', 'text/css'), '/app.js': ('app.js', 'text/javascript')}
 STATIC.update({'/library.js': ('library.js', 'text/javascript'), '/library.css': ('library.css', 'text/css')})
+STATIC.update({'/'+name: (name, 'text/css' if name.endswith('.css') else 'text/javascript') for name in ['browser-python.js', 'python-worker.js', 'python.css']})
 
 
 def run_code(python, code):
@@ -94,7 +95,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Content-Type', asset[1] + '; charset=utf-8')
         self.send_header('Content-Length', str(len(body)))
         self.send_header('X-Content-Type-Options', 'nosniff')
-        self.send_header('Content-Security-Policy', "default-src 'self'; connect-src 'self' http://127.0.0.1:8765 https://danouga.github.io; frame-ancestors 'none'")
+        self.send_header('Content-Security-Policy', "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://cdn.jsdelivr.net; worker-src 'self'; connect-src 'self' http://127.0.0.1:8765 https://danouga.github.io https://cdn.jsdelivr.net; frame-ancestors 'none'")
         self.end_headers()
         self.wfile.write(body)
 
