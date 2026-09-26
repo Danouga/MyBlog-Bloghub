@@ -62,7 +62,7 @@ input[type="search"]:focus-visible, a:focus-visible { outline: 2px solid var(--o
   backdrop-filter: blur(7px);
   transition: background .18s, border-color .18s, transform .18s;
 }
-.note-card:hover { background: rgba(255, 255, 255, .17); border-color: rgba(240, 150, 54, .65); transform: translateY(-3px); }
+.note-card:hover, .file-card:hover { background: rgba(255, 255, 255, .17); border-color: rgba(240, 150, 54, .65); transform: translateY(-3px); }
 .note-card h2 { overflow: hidden; margin: 0 0 10px; font-size: 20px; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
 .note-excerpt { display: -webkit-box; overflow: hidden; margin: 0 0 18px; color: #ddd; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
 .note-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; color: #c4c4c8; font-size: 12px; }

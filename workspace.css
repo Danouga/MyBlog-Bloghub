@@ -1,3 +1,26 @@
 body {
   background: #111214 url("bg.png") center center / cover fixed no-repeat;
+  font-size: 14px;
+}
+.site-header { display: block; padding: 0; font-size: 16px; }
+.site-header #search { width: min(240px, 28vw); margin-left: 0; }
+.intro-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+.file-card {
+  color: white;
+  background: rgba(255, 255, 255, .1);
+  border: 1px solid rgba(255, 255, 255, .13);
+  backdrop-filter: blur(7px);
+  transition: background .18s, border-color .18s, transform .18s;
+}
+.file-card.selected { border-color: rgba(240, 150, 54, .65); }
+@media (max-width: 700px) {
+  .site-header #search { width: 100%; }
+}
+@media (max-width: 500px) {
+  .site-header { padding: 0; }
+  .intro { align-items: flex-start; flex-direction: column; }
+  .intro-actions { justify-content: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .file-card { transition: none; }
 }
