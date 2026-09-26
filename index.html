@@ -14,6 +14,7 @@
       <nav aria-label="主导航">
         <a class="current" href="./">首页</a>
         <a href="workspace.html">编辑工作台</a>
+        <a href="projects.html">项目列表</a>
       </nav>
       <label class="search-wrap"><span class="sr-only">搜索笔记</span><input id="search" type="search" placeholder="搜索笔记…" autocomplete="off"></label>
     </div>
@@ -21,6 +22,10 @@
   <main class="home-main">
     <h1>Blog 列表</h1>
     <p class="list-summary" id="summary">正在加载笔记…</p>
+    <div class="list-controls">
+      <label>排序 <select id="sort"><option value="newest">最近更新</option><option value="oldest">最早更新</option><option value="name">名称 A–Z</option></select></label>
+      <label>筛选 <select id="typeFilter"><option value="all">全部类型</option><option value="md">Markdown</option><option value="ipynb">Notebook</option><option value="code">代码与文本</option></select></label>
+    </div>
     <div class="note-grid" id="notes" aria-live="polite"></div>
   </main>
 </body>

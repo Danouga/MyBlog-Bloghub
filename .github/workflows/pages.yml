@@ -18,11 +18,15 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/configure-pages@v5
       - name: Prepare static files
         run: |
           mkdir _site
-          cp index.html note.html workspace.html site.css site.js workspace.css bg.png style.css app.js library.css library.js browser-python.js python-worker.js python.css _site/
+          cp index.html note.html workspace.html projects.html line-drawer.html site.css site.js workspace.css projects.css projects.js line-drawer-worker.js bg.png style.css app.js library.css library.js browser-python.js python-worker.js python.css _site/
+          mkdir -p _site/projects
+          cp projects/lineDrawer3.py _site/projects/
           python3 build_notes.py
       - uses: actions/upload-pages-artifact@v3
         with:

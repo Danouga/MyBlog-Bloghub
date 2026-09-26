@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Line Drawer · Bloghub</title>
+  <link rel="stylesheet" href="site.css">
+  <link rel="stylesheet" href="projects.css">
+  <script defer src="projects.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./">Blog<span>hub</span></a>
+      <nav aria-label="主导航">
+        <a href="./">首页</a>
+        <a href="workspace.html">编辑工作台</a>
+        <a class="current" href="projects.html">项目列表</a>
+      </nav>
+    </div>
+  </header>
+  <main class="project-main">
+    <a class="back-link" href="projects.html">← 返回项目列表</a>
+    <section class="project-panel">
+      <div class="project-heading">
+        <div>
+          <p class="note-type">浏览器 Python 项目</p>
+          <h1>Line Drawer</h1>
+          <p>选择图片、调整参数，再生成线条画。图片只在当前浏览器中处理，不会上传到服务器。</p>
+        </div>
+        <a class="source-link" href="projects/lineDrawer3.py" download>下载 lineDrawer3.py</a>
+      </div>
+      <form id="drawer-form">
+        <label class="upload-box" for="image-file">选择图片 <span>支持 PNG、JPEG 和 WebP，最大 12 MB</span></label>
+        <input id="image-file" type="file" accept="image/png,image/jpeg,image/webp" required>
+        <div class="parameter-grid">
+          <label>线条数量 <input id="line-count" type="number" min="20" max="400" value="160" required></label>
+          <label>尝试角度 <input id="angle-count" type="number" min="2" max="40" value="16" required></label>
+          <label>墨水深度 <input id="darkness" type="number" min="1" max="255" value="32" required></label>
+          <label class="check-label"><input id="color" type="checkbox"> 彩色模式</label>
+          <label class="check-label"><input id="inverted" type="checkbox"> 白线黑底</label>
+        </div>
+        <p class="helper">为控制浏览器运算时间，图片会等比缩至最长边 256 像素；首次运行需要联网加载 Python、NumPy 和 Pillow。</p>
+        <div class="project-actions">
+          <button id="run-project" class="project-primary" type="submit">生成线条画</button>
+          <button id="cancel-project" type="button" disabled>停止</button>
+          <a id="download-result" class="source-link" hidden download="line-drawing.png">下载结果</a>
+        </div>
+      </form>
+      <p id="project-status" class="project-status" role="status">请选择一张图片。</p>
+      <div class="image-grid">
+        <figure><figcaption>原图</figcaption><img id="input-preview" alt="选中的原图预览" hidden></figure>
+        <figure><figcaption>生成结果</figcaption><img id="output-preview" alt="生成的线条画" hidden></figure>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

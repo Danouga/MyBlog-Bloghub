@@ -1,0 +1,29 @@
+.project-main { width: min(1120px, calc(100% - 40px)); margin: 34px auto 90px; }
+.project-panel { padding: clamp(22px, 4vw, 40px); background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); border-radius: 10px; backdrop-filter: blur(10px); }
+.project-heading { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+.project-heading h1 { margin: 0 0 8px; font-size: 32px; }
+.project-heading p:last-child { max-width: 680px; margin: 0 0 22px; color: #ddd; }
+.project-card { grid-column: 1 / -1; }
+.source-link { display: inline-flex; align-items: center; padding: 8px 12px; color: #ffbc75; border: 1px solid rgba(240,150,54,.6); border-radius: 6px; text-decoration: none; white-space: nowrap; }
+.source-link:hover { background: rgba(240,150,54,.13); }
+.upload-box { display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px; font-weight: 600; }
+.upload-box span { color: #bbb; font-size: 13px; font-weight: 400; }
+#image-file { display: block; width: 100%; padding: 13px; color: white; background: rgba(0,0,0,.25); border: 1px dashed #888; border-radius: 7px; }
+.parameter-grid { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; margin: 22px 0 12px; }
+.parameter-grid label { display: flex; flex-direction: column; gap: 6px; color: #ddd; font-size: 13px; }
+.parameter-grid input[type="number"] { width: 130px; padding: 8px 10px; color: white; background: #242426; border: 1px solid #555; border-radius: 6px; font: inherit; }
+.parameter-grid .check-label { flex-direction: row; align-items: center; gap: 8px; min-height: 40px; }
+.parameter-grid input[type="checkbox"] { accent-color: #f09636; }
+.helper { color: #bbb; font-size: 13px; }
+.project-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 20px 0 8px; }
+.project-actions button { padding: 10px 17px; color: white; background: #29292c; border: 1px solid #555; border-radius: 6px; font: inherit; cursor: pointer; }
+.project-actions button:hover:not(:disabled) { border-color: #f09636; }
+.project-actions button:disabled { opacity: .5; cursor: not-allowed; }
+.project-actions .project-primary { color: #1d140c; background: #f09636; border-color: #f09636; font-weight: 700; }
+.project-status { min-height: 25px; color: #ffbc75; }
+.image-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
+.image-grid figure { min-height: 230px; margin: 0; padding: 14px; background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.14); border-radius: 8px; }
+.image-grid figcaption { margin-bottom: 12px; color: #ccc; }
+.image-grid img { display: block; max-width: 100%; max-height: 430px; margin: auto; object-fit: contain; }
+.image-grid img[hidden], [hidden] { display: none !important; }
+@media (max-width: 700px) { .project-main { width: calc(100% - 28px); } .image-grid { grid-template-columns: 1fr; } }

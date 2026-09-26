@@ -4,6 +4,12 @@ const page = document.body.dataset.page;
 const noteUrl = name => 'note.html?name=' + encodeURIComponent(name);
 const fileType = name => name.split('.').pop().toLowerCase();
 const noteTitle = name => name.split('/').pop().replace(/\.[^.]+$/, '');
+const noteKind = note => ['md', 'ipynb'].includes(fileType(note.name)) ? fileType(note.name) : 'code';
+const noteTime = note => Date.parse(note.updatedAt || '') || 0;
+const formatDate = value => {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '日期未知' : new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(date);
+};
 const sourceText = value => Array.isArray(value) ? value.join('') : String(value || '');
 const make = (tag, className, value) => {
   const element = document.createElement(tag);
@@ -35,9 +41,19 @@ function showHome(notes) {
   const list = document.getElementById('notes');
   const status = document.getElementById('summary');
   const search = document.getElementById('search');
+  const sort = document.getElementById('sort');
+  const typeFilter = document.getElementById('typeFilter');
   function render() {
     const query = search.value.trim().toLocaleLowerCase();
-    const visible = notes.filter(note => (note.name + ' ' + summary(note)).toLocaleLowerCase().includes(query));
+    const visible = notes.filter(note =>
+      (typeFilter.value === 'all' || noteKind(note) === typeFilter.value) &&
+      (note.name + ' ' + summary(note)).toLocaleLowerCase().includes(query)
+    );
+    visible.sort((a, b) => {
+      if (sort.value === 'name') return noteTitle(a.name).localeCompare(noteTitle(b.name), 'zh-CN');
+      const difference = sort.value === 'oldest' ? noteTime(a) - noteTime(b) : noteTime(b) - noteTime(a);
+      return difference || noteTitle(a.name).localeCompare(noteTitle(b.name), 'zh-CN');
+    });
     list.replaceChildren();
     status.textContent = '共 ' + visible.length + ' 篇笔记';
     for (const note of visible) {
@@ -46,7 +62,12 @@ function showHome(notes) {
       card.append(make('h2', '', noteTitle(note.name)));
       card.append(make('p', 'note-excerpt', summary(note)));
       const meta = make('div', 'note-meta');
-      meta.append(make('span', '', fileType(note.name).toUpperCase() + (note.name.includes('/') ? ' · ' + note.name.slice(0, note.name.lastIndexOf('/')) : '')));
+      const facts = make('div', 'note-facts');
+      facts.append(make('span', '', fileType(note.name).toUpperCase() + (note.name.includes('/') ? ' · ' + note.name.slice(0, note.name.lastIndexOf('/')) : '')));
+      const date = make('time', '', '更新于 ' + formatDate(note.updatedAt));
+      if (note.updatedAt) date.dateTime = note.updatedAt;
+      facts.append(date);
+      meta.append(facts);
       meta.append(make('span', 'view-link', '查看 →'));
       card.append(meta);
       list.append(card);
@@ -54,6 +75,8 @@ function showHome(notes) {
     if (!visible.length) list.append(make('p', 'empty-state', query ? '没有找到匹配的笔记。' : '还没有已发布的笔记。'));
   }
   search.addEventListener('input', render);
+  sort.addEventListener('change', render);
+  typeFilter.addEventListener('change', render);
   render();
 }
 

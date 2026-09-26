@@ -2,6 +2,8 @@
 
 首页展示 notes/ 目录中的公开笔记，点击卡片进入独立展示页；页面背景沿用原 Bloghub 的 bg.png。编辑工作台位于 workspace.html，浏览器草稿仍留在本地。
 
+笔记卡片显示最近一次 Git 提交日期，可按日期或名称排序，并按 Markdown、Notebook、代码与文本筛选。导航栏的“项目列表”包含 Line Drawer：网页可上传图片，在浏览器内运行 `projects/lineDrawer3.py`，预览并下载线条画。首次运行需要联网加载 Pyodide、NumPy 和 Pillow；上传的图片不会发送到服务器。
+
 无登录、无网页仓库写入功能的静态博客与代码笔记空间。
 
 ## 手动发布
