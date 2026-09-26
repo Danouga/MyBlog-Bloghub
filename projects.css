@@ -12,6 +12,7 @@
 .parameter-grid { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; margin: 22px 0 12px; }
 .parameter-grid label { display: flex; flex-direction: column; gap: 6px; color: #ddd; font-size: 13px; }
 .parameter-grid input[type="number"] { width: 130px; padding: 8px 10px; color: white; background: #242426; border: 1px solid #555; border-radius: 6px; font: inherit; }
+.parameter-grid select { width: 140px; padding: 8px 10px; color: white; background: #242426; border: 1px solid #555; border-radius: 6px; font: inherit; }
 .parameter-grid .check-label { flex-direction: row; align-items: center; gap: 8px; min-height: 40px; }
 .parameter-grid input[type="checkbox"] { accent-color: #f09636; }
 .helper { color: #bbb; font-size: 13px; }

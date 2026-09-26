@@ -47,7 +47,7 @@ self.onmessage = async ({ data }) => {
     }
     runtime.FS.writeFile('/home/pyodide/input.png', new Uint8Array(data.image));
     runtime.FS.writeFile('/home/pyodide/config.json', JSON.stringify(data.options));
-    self.postMessage({ type: 'status', text: '正在运行 lineDrawer3.py，请稍候…' });
+    self.postMessage({ type: 'status', text: '正在绘制 ' + data.options.lines + ' 条线，细节较多时可能需要数分钟…' });
     await runtime.runPythonAsync(script);
     const image = runtime.FS.readFile('/home/pyodide/output.png');
     self.postMessage({ type: 'done', image }, [image.buffer]);

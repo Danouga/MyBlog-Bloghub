@@ -12,7 +12,6 @@ const status = byId('project-status');
 let worker = null;
 let inputUrl = null;
 let outputUrl = null;
-let deadline = null;
 let runId = 0;
 let busy = false;
 
@@ -32,8 +31,6 @@ function clearOutput() {
   download.removeAttribute('href');
 }
 function finish(message, resetWorker = false) {
-  clearTimeout(deadline);
-  deadline = null;
   if (resetWorker && worker) { worker.terminate(); worker = null; }
   setBusy(false);
   setStatus(message);
@@ -77,12 +74,14 @@ form.addEventListener('submit', async event => {
     lines: Number(byId('line-count').value),
     angles: Number(byId('angle-count').value),
     darkness: Number(byId('darkness').value),
+    maxSize: Number(byId('max-size').value),
     color: byId('color').checked,
     inverted: byId('inverted').checked
   };
-  if (!Number.isInteger(options.lines) || options.lines < 20 || options.lines > 400 ||
+  if (!Number.isInteger(options.lines) || options.lines < 20 || options.lines > 10000 ||
       !Number.isInteger(options.angles) || options.angles < 2 || options.angles > 40 ||
-      !Number.isInteger(options.darkness) || options.darkness < 1 || options.darkness > 255) {
+      !Number.isInteger(options.darkness) || options.darkness < 1 || options.darkness > 255 ||
+      ![256, 512, 768, 1024].includes(options.maxSize)) {
     setStatus('请检查参数范围。');
     return;
   }
@@ -94,7 +93,7 @@ form.addEventListener('submit', async event => {
     const bitmap = await createImageBitmap(file);
     if (currentRun !== runId) { bitmap.close(); return; }
     if (bitmap.width < 2 || bitmap.height < 2) throw new Error('图片宽高至少需要 2 像素。');
-    const scale = Math.min(1, 256 / Math.max(bitmap.width, bitmap.height));
+    const scale = Math.min(1, options.maxSize / Math.max(bitmap.width, bitmap.height));
     const canvas = document.createElement('canvas');
     canvas.width = Math.max(2, Math.round(bitmap.width * scale));
     canvas.height = Math.max(2, Math.round(bitmap.height * scale));
@@ -121,9 +120,6 @@ form.addEventListener('submit', async event => {
       error.preventDefault();
       if (currentRun === runId) finish('浏览器 Python 加载失败，请检查网络后重试。', true);
     };
-    deadline = setTimeout(() => {
-      if (currentRun === runId) finish('运行超过 3 分钟，已停止。请减少线条或角度后重试。', true);
-    }, 180000);
     worker.postMessage({ type: 'run', image, options }, [image]);
   } catch (error) {
     if (currentRun === runId) finish('无法处理图片：' + (error.message || error), true);
