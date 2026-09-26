@@ -2,3 +2,5 @@ __pycache__/
 *.pyc
 .venv/
 _site/
+notes/datasets/
+.vscode/
