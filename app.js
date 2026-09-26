@@ -30,7 +30,7 @@ const refresh=document.createElement('button');refresh.textContent='刷新公开
 
 async function loadPublic(){
   try{
-    const response=await fetch('https://danouga.github.io/MyBlog-Bloghub/notes.json?t='+Date.now(),{cache:'no-store'});
+    const response=await fetch('notes.json?t='+Date.now(),{cache:'no-store'});
     if(!response.ok)throw Error('HTTP '+response.status);
     const notes=await response.json();
     if(!Array.isArray(notes))throw Error('目录格式错误');

@@ -3,25 +3,27 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bloghub · 笔记</title>
+  <title>笔记 · Bloghub</title>
   <link rel="stylesheet" href="site.css">
   <script defer src="site.js"></script>
 </head>
-<body data-page="home">
+<body data-page="note">
   <header class="site-header">
     <div class="header-inner">
       <a class="brand" href="./">Blog<span>hub</span></a>
       <nav aria-label="主导航">
-        <a class="current" href="./">首页</a>
+        <a href="./">首页</a>
         <a href="workspace.html">编辑工作台</a>
       </nav>
-      <label class="search-wrap"><span class="sr-only">搜索笔记</span><input id="search" type="search" placeholder="搜索笔记…" autocomplete="off"></label>
     </div>
   </header>
-  <main class="home-main">
-    <h1>Blog 列表</h1>
-    <p class="list-summary" id="summary">正在加载笔记…</p>
-    <div class="note-grid" id="notes" aria-live="polite"></div>
+  <main class="detail-main">
+    <a class="back-link" href="./">← 返回笔记列表</a>
+    <article class="note-detail">
+      <p class="note-type" id="note-type"></p>
+      <h1 id="note-title">正在加载笔记…</h1>
+      <div class="note-content" id="note-content"></div>
+    </article>
   </main>
 </body>
 </html>
