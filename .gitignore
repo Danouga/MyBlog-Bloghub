@@ -6,3 +6,5 @@ notes/datasets/
 .vscode/
 notes/models/
 resnet-cat-dog/
+archive/
+semantic-segmentation-lab/
